@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router";
 
 const renderRoutes = (routes, extraProps = {}, switchProps = {}) =>
+export const renderRoutes = (routes, extraProps = {}, switchProps = {}) =>
   routes ? (
     <Switch {...switchProps}>
       {routes.map((route, i) => (
@@ -13,9 +14,11 @@ const renderRoutes = (routes, extraProps = {}, switchProps = {}) =>
           render={props =>
             route.render ? (
               route.render({ ...props, ...extraProps, route: route })
-            ) : (
+            ) : route.component ? (
               <route.component {...props} {...extraProps} route={route} />
-            )
+            ) : Array.isArray(route.routes) ? (
+							renderRoutes(route.routes, extraProps, switchProps)
+						) : null
           }
         />
       ))}
